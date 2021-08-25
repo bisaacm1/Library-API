@@ -55,16 +55,6 @@ public class BookController {
         service.delete(book);
     }
 
-    @GetMapping
-    public Page<BookDTO> find(BookDTO dto, Pageable pageRequest){
-        Book filter = modelMapper.map( dto, Book.class );
-        Page<Book> page = service.findByExample(filter, pageRequest);
-        List<BookDTO> list = page.getContent().stream()
-                .map(entity -> modelMapper.map(entity, BookDTO.class))
-                .collect(Collectors.toList());
-        return new PageImpl<BookDTO>(list, pageRequest, page.getTotalElements());
-    }
-
     @PutMapping("{id}")
     public BookDTO update( @PathVariable Long id, BookDTO dto){
         return service.getById(id).map( book -> {
@@ -77,16 +67,17 @@ public class BookController {
         }).orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND) );
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErros handleValidationExceptions(MethodArgumentNotValidException ex){
-        BindingResult bindingResult = ex.getBindingResult();
-        return new ApiErros(bindingResult);
+    @GetMapping
+    public Page<BookDTO> find( BookDTO dto, Pageable pageRequest ){
+        Book filter = modelMapper.map(dto, Book.class);
+        Page<Book> result = service.find(filter, pageRequest);
+        List<BookDTO> list = result.getContent()
+                .stream()
+                .map(entity -> modelMapper.map(entity, BookDTO.class))
+                .collect(Collectors.toList());
+
+        return new PageImpl<BookDTO>( list, pageRequest, result.getTotalElements() );
     }
 
-    @ExceptionHandler(BusinessException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErros handleBusinessException(BusinessException ex){
-        return new ApiErros(ex);
-    }
+
 }
