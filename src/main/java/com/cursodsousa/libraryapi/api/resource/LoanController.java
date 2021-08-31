@@ -1,6 +1,7 @@
 package com.cursodsousa.libraryapi.api.resource;
 
 import com.cursodsousa.libraryapi.api.dto.LoanDTO;
+import com.cursodsousa.libraryapi.api.dto.LoanFilterDto;
 import com.cursodsousa.libraryapi.api.dto.ReturnedLoanDTO;
 import com.cursodsousa.libraryapi.exception.BusinessException;
 import com.cursodsousa.libraryapi.model.entity.Book;
@@ -8,6 +9,9 @@ import com.cursodsousa.libraryapi.model.entity.Loan;
 import com.cursodsousa.libraryapi.service.BookService;
 import com.cursodsousa.libraryapi.service.LoanService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -51,4 +55,9 @@ public class LoanController {
 
     }
 
+    @GetMapping
+    public Page<LoanDTO> find(LoanFilterDto dto, Pageable pageable){
+        Page<Loan> result = service.find(dto, pageable);
+        return null;
+    }
 }
