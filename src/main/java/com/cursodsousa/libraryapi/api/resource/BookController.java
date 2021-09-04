@@ -84,7 +84,7 @@ public class BookController {
     public Page<LoanDTO> loansByBook( @PathVariable Long id, Pageable pageable ){
         Book book = service.getById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         Page<Loan> result = loanService.getLoanByBook(book, pageable);
-        result
+        List<LoanDTO> list = result
                 .getContent()
                 .stream()
                 .map(loan -> {
@@ -93,7 +93,7 @@ public class BookController {
                     LoanDTO loanDTO = modelMapper.map(loan, LoanDTO.class);
                     loanDTO.setBook(bookDTO);
                     return loanDTO;
-                }).collect(Collectors.toList())
+                }).collect(Collectors.toList());
         return new PageImpl<LoanDTO>(list, pageable, result.getTotalElements());
     }
 
