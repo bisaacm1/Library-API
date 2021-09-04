@@ -2,6 +2,7 @@ package com.cursodsousa.libraryapi.service;
 
 import com.cursodsousa.libraryapi.api.dto.LoanFilterDto;
 import com.cursodsousa.libraryapi.api.resource.BookController;
+import com.cursodsousa.libraryapi.model.entity.Book;
 import com.cursodsousa.libraryapi.model.entity.Loan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,4 +17,6 @@ public interface LoanService {
     Loan update(Loan loan);
 
     Page<Loan> find(LoanFilterDto filterDto, Pageable pageable);
+
+    Page<Loan> getLoanByBook(Book book, Pageable pageable);
 }
