@@ -5,7 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Id;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.OneToMany;
+
 import java.util.List;
 
 @Data
@@ -15,7 +22,6 @@ import java.util.List;
 @Entity
 @Table
 public class Book {
-
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,6 +36,6 @@ public class Book {
     @Column
     private String isbn;
 
-    @OneToMany( mappedBy = "book", fetch = FetchType.LAZY )
+    @OneToMany(mappedBy = "book")
     private List<Loan> loans;
 }

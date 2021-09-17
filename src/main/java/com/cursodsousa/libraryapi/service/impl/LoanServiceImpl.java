@@ -1,12 +1,11 @@
 package com.cursodsousa.libraryapi.service.impl;
 
-import com.cursodsousa.libraryapi.api.dto.LoanFilterDto;
+import com.cursodsousa.libraryapi.api.dto.LoanFilterDTO;
 import com.cursodsousa.libraryapi.exception.BusinessException;
 import com.cursodsousa.libraryapi.model.entity.Book;
 import com.cursodsousa.libraryapi.model.entity.Loan;
 import com.cursodsousa.libraryapi.model.repository.LoanRepository;
 import com.cursodsousa.libraryapi.service.LoanService;
-import org.apache.tomcat.jni.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,7 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     public Loan save(Loan loan) {
-        if (repository.existsByBookAndNotReturned(loan.getBook())){
+        if (repository.existsByBookAndNotReturned(loan.getBook())) {
             throw new BusinessException("Book already loaned");
         }
         return repository.save(loan);
@@ -43,19 +42,19 @@ public class LoanServiceImpl implements LoanService {
     }
 
     @Override
-    public Page<Loan> find(LoanFilterDto filterDto, Pageable pageable) {
-        return repository.findByBookIsbnOrCustomer(filterDto.getIsbn(), filterDto.getCustomer(), pageable);
+    public Page<Loan> find(LoanFilterDTO filterDTO, Pageable pageable) {
+        return repository.findByBookIsbnOrCustomer(filterDTO.getIsbn(), filterDTO.getCustomer(), pageable);
     }
 
     @Override
-    public Page<Loan> getLoanByBook(Book book, Pageable pageable) {
+    public Page<Loan> getLoansByBook(Book book, Pageable pageable) {
         return repository.findByBook(book, pageable);
     }
 
     @Override
     public List<Loan> getAllLateLoans() {
         final Integer loanDays = 4;
-        LocalDate treeDaysAgo = LocalDate.now().minusDays(loanDays);
-        return repository.findByLoanDateLessThanAndNotReturned(treeDaysAgo);
+        LocalDate threeDaysAgo = LocalDate.now().minusDays(loanDays);
+        return repository.findByLoanDateLessThanAndNotReturned(threeDaysAgo);
     }
 }

@@ -13,7 +13,7 @@ public class ApiErros {
 
     public ApiErros(BindingResult bindingResult) {
         this.errors = new ArrayList<>();
-        bindingResult.getAllErrors().forEach( error -> this.errors.add(error.getDefaultMessage())  );
+        bindingResult.getAllErrors().forEach(error -> this.errors.add(error.getDefaultMessage()));
     }
 
     public ApiErros(BusinessException ex) {

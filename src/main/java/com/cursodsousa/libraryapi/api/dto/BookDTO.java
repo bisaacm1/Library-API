@@ -1,6 +1,9 @@
 package com.cursodsousa.libraryapi.api.dto;
 
-import lombok.*;
+import lombok.Data;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -9,7 +12,6 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookDTO {
-
     private Long id;
 
     @NotEmpty
@@ -20,5 +22,4 @@ public class BookDTO {
 
     @NotEmpty
     private String isbn;
-
 }

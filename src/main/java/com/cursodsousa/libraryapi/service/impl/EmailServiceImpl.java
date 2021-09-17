@@ -19,15 +19,15 @@ public class EmailServiceImpl implements EmailService {
     private final JavaMailSender javaMailSender;
 
     @Override
-    public void sendMails(String messagem, List<String> mailsList) {
+    public void sendMails(String message, List<String> mailsList) {
 
-        String[] to = mailsList.toArray(new String[mailsList.size()]);
+        String[] mails = mailsList.toArray(new String[mailsList.size()]);
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setFrom(remetent);
         mailMessage.setSubject("Livro com empréstimo atrasado");
-        mailMessage.setText(messagem);
-        mailMessage.setTo(to);
+        mailMessage.setText(message);
+        mailMessage.setTo(mails);
 
         javaMailSender.send(mailMessage);
     }

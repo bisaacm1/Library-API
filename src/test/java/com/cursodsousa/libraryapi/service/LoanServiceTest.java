@@ -1,6 +1,6 @@
 package com.cursodsousa.libraryapi.service;
 
-import com.cursodsousa.libraryapi.api.dto.LoanFilterDto;
+import com.cursodsousa.libraryapi.api.dto.LoanFilterDTO;
 import com.cursodsousa.libraryapi.exception.BusinessException;
 import com.cursodsousa.libraryapi.model.entity.Book;
 import com.cursodsousa.libraryapi.model.entity.Loan;
@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -48,21 +47,21 @@ public class LoanServiceTest {
         Book book = Book.builder().id(1l).build();
         String customer = "Fulano";
 
-        Loan savingLoan = Loan.builder()
-                .book(book)
-                .customer(customer)
-                .loanDate(LocalDate.now())
-                .build();
+        Loan savingLoan =
+                Loan.builder()
+                        .book(book)
+                        .customer(customer)
+                        .loanDate(LocalDate.now())
+                        .build();
 
         Loan savedLoan = Loan.builder()
                 .id(1l)
-                .book(book)
-                .customer(customer)
                 .loanDate(LocalDate.now())
-                .build();
+                .customer(customer)
+                .book(book).build();
+
 
         when(repository.existsByBookAndNotReturned(book)).thenReturn(false);
-
         when(repository.save(savingLoan)).thenReturn(savedLoan);
 
         Loan loan = service.save(savingLoan);
@@ -79,28 +78,29 @@ public class LoanServiceTest {
         Book book = Book.builder().id(1l).build();
         String customer = "Fulano";
 
-        Loan savingLoan = Loan.builder()
-                .book(book)
-                .customer(customer)
-                .loanDate(LocalDate.now())
-                .build();
-
-        createLoan();
+        Loan savingLoan =
+                Loan.builder()
+                        .book(book)
+                        .customer(customer)
+                        .loanDate(LocalDate.now())
+                        .build();
 
         when(repository.existsByBookAndNotReturned(book)).thenReturn(true);
 
-        Throwable throwable = catchThrowable(() -> service.save(savingLoan));
+        Throwable exception = catchThrowable(() -> service.save(savingLoan));
 
-        assertThat(throwable)
+        assertThat(exception)
                 .isInstanceOf(BusinessException.class)
                 .hasMessage("Book already loaned");
 
         verify(repository, never()).save(savingLoan);
+
     }
 
     @Test
-    @DisplayName("Deve obter as informações de um empréstimo pelo ID")
-    public void getLoanDetailTest() {
+    @DisplayName(" Deve obter as informações de um empréstimo pelo ID")
+    public void getLoanDetaisTest() {
+        //cenário
         Long id = 1l;
 
         Loan loan = createLoan();
@@ -108,8 +108,10 @@ public class LoanServiceTest {
 
         Mockito.when(repository.findById(id)).thenReturn(Optional.of(loan));
 
+        //execucao
         Optional<Loan> result = service.getById(id);
 
+        //verificacao
         assertThat(result.isPresent()).isTrue();
         assertThat(result.get().getId()).isEqualTo(id);
         assertThat(result.get().getCustomer()).isEqualTo(loan.getCustomer());
@@ -121,7 +123,7 @@ public class LoanServiceTest {
     }
 
     @Test
-    @DisplayName("Deve atualizar um empréstimo")
+    @DisplayName("Deve atualizar um empréstimo.")
     public void updateLoanTest() {
         Loan loan = createLoan();
         loan.setId(1l);
@@ -129,11 +131,40 @@ public class LoanServiceTest {
 
         when(repository.save(loan)).thenReturn(loan);
 
-        Loan updateLoan = service.update(loan);
+        Loan updatedLoan = service.update(loan);
 
-        assertThat(updateLoan.getReturned()).isTrue();
+        assertThat(updatedLoan.getReturned()).isTrue();
         verify(repository).save(loan);
+    }
 
+    @Test
+    @DisplayName("Deve filtrar empréstimos pelas propriedades")
+    public void findLoanTest() {
+        //cenario
+        LoanFilterDTO loanFilterDTO = LoanFilterDTO.builder().customer("Fulano").isbn("321").build();
+
+        Loan loan = createLoan();
+        loan.setId(1l);
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        List<Loan> lista = Arrays.asList(loan);
+
+        Page<Loan> page = new PageImpl<Loan>(lista, pageRequest, lista.size());
+        when(repository.findByBookIsbnOrCustomer(
+                Mockito.anyString(),
+                Mockito.anyString(),
+                Mockito.any(PageRequest.class))
+        )
+                .thenReturn(page);
+
+        //execucao
+        Page<Loan> result = service.find(loanFilterDTO, pageRequest);
+
+
+        //verificacoes
+        assertThat(result.getTotalElements()).isEqualTo(1);
+        assertThat(result.getContent()).isEqualTo(lista);
+        assertThat(result.getPageable().getPageNumber()).isEqualTo(0);
+        assertThat(result.getPageable().getPageSize()).isEqualTo(10);
     }
 
     public static Loan createLoan() {
@@ -146,35 +177,4 @@ public class LoanServiceTest {
                 .loanDate(LocalDate.now())
                 .build();
     }
-
-    @Test
-    @DisplayName("Deve filtrar empréstimos pelas propriedades")
-    public void findLoanTest() {
-        //cenario
-        LoanFilterDto loanFilterDto = LoanFilterDto.builder().customer("Fulano").isbn("123").build();
-        Loan loan = createLoan();
-        loan.setId(1l);
-
-        PageRequest pageRequest = PageRequest.of(0, 10);
-
-        List<Loan> lista = Arrays.asList(loan);
-        Page<Loan> page = new PageImpl<Loan>(lista, pageRequest, lista.size());
-        when(repository.findByBookIsbnOrCustomer(
-                Mockito.anyString(),
-                Mockito.anyString(),
-                Mockito.any(PageRequest.class)
-                ))
-                .thenReturn(page);
-
-        //execucao
-        Page<Loan> result = service.find(loanFilterDto, pageRequest);
-
-        //verificacoes
-        assertThat(result.getTotalElements()).isEqualTo(1);
-        assertThat(result.getContent()).isEqualTo(lista);
-        assertThat(result.getPageable().getPageNumber()).isEqualTo(0);
-        assertThat(result.getPageable().getPageSize()).isEqualTo(10);
-
-    }
-
 }
