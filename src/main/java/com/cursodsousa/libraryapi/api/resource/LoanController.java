@@ -8,6 +8,7 @@ import com.cursodsousa.libraryapi.model.entity.Book;
 import com.cursodsousa.libraryapi.model.entity.Loan;
 import com.cursodsousa.libraryapi.service.BookService;
 import com.cursodsousa.libraryapi.service.LoanService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -31,6 +32,7 @@ public class LoanController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation("CREATE A LOAN")
     public Long create(@RequestBody LoanDTO dto) {
         Book book = bookService
                 .getBookByIsbn(dto.getIsbn())
@@ -56,6 +58,7 @@ public class LoanController {
     }
 
     @GetMapping
+    @ApiOperation("Lists Loan by params")
     public Page<LoanDTO> find(LoanFilterDTO dto, Pageable pageRequest) {
         Page<Loan> result = service.find(dto, pageRequest);
         List<LoanDTO> loans = result
