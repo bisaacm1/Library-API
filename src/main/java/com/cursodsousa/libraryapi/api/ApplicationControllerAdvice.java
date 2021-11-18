@@ -16,19 +16,19 @@ public class ApplicationControllerAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErros handleValidationExceptions(MethodArgumentNotValidException ex) {
+    public ApiErros handleValidationExceptions(MethodArgumentNotValidException ex){
         BindingResult bindingResult = ex.getBindingResult();
         return new ApiErros(bindingResult);
     }
 
     @ExceptionHandler(BusinessException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErros handleBusinessException(BusinessException ex) {
+    public ApiErros handleBusinessException(BusinessException ex){
         return new ApiErros(ex);
     }
 
     @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity handleResponseStatusException(ResponseStatusException ex) {
+    public ResponseEntity handleResponseStatusException( ResponseStatusException ex ){
         return new ResponseEntity(new ApiErros(ex), ex.getStatus());
     }
 }

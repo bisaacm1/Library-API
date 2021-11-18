@@ -1,6 +1,7 @@
 package com.cursodsousa.libraryapi.service;
 
 import com.cursodsousa.libraryapi.api.dto.LoanFilterDTO;
+import com.cursodsousa.libraryapi.api.resource.BookController;
 import com.cursodsousa.libraryapi.model.entity.Book;
 import com.cursodsousa.libraryapi.model.entity.Loan;
 import org.springframework.data.domain.Page;
@@ -11,7 +12,7 @@ import java.util.Optional;
 
 public interface LoanService {
 
-    Loan save(Loan loan);
+    Loan save( Loan loan );
 
     Optional<Loan> getById(Long id);
 
@@ -19,7 +20,7 @@ public interface LoanService {
 
     Page<Loan> find(LoanFilterDTO filterDTO, Pageable pageable);
 
-    Page<Loan> getLoansByBook(Book book, Pageable pageable);
+    Page<Loan> getLoansByBook( Book book, Pageable pageable);
 
     List<Loan> getAllLateLoans();
 
