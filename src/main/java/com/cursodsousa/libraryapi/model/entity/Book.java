@@ -5,7 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Column;
+import javax.persistence.GenerationType;
+import javax.persistence.OneToMany;
 import java.util.List;
 
 @Data
@@ -30,7 +36,6 @@ public class Book {
     @Column
     private String isbn;
 
-    @OneToMany( mappedBy = "book" )
+    @OneToMany(mappedBy = "book")
     private List<Loan> loans;
-
 }

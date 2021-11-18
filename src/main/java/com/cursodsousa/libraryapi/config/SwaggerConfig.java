@@ -16,10 +16,10 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerConfig {
 
     @Bean
-    public Docket docket(){
+    public Docket docket() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis( RequestHandlerSelectors.basePackage("com.cursodsousa.libraryapi.api.resource") )
+                .apis(RequestHandlerSelectors.basePackage("com.cursodsousa.libraryapi.api.resource"))
                 .paths(PathSelectors.any())
                 .build()
                 .apiInfo(apiInfo());
